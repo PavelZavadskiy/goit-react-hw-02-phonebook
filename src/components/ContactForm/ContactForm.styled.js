@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.form`
   margin: 0 auto;
   display: inline-flex;
   flex-direction: column;
@@ -18,8 +18,7 @@ export const Text = styled.p`
 export const InputName = styled.input``;
 
 export const Button = styled.button`
-  type="submit";
-  cursor: pointer; 
+  cursor: pointer;
   padding: 8px;
   border-radius: 6px;
   border-color: lightgray;

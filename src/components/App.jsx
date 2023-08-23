@@ -1,7 +1,8 @@
 import { Component } from 'react';
+import { WrapperRoot } from './App.styled';
 // import { Section } from './Section/Section';
 import { ContactForm } from './ContactForm/ContactForm';
-import { nanoid } from 'nanoid';
+
 import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
 
@@ -13,40 +14,36 @@ export class App extends Component {
       { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
-    name: '',
-    number: '',
+    // name: '',
+    // number: '',
     filter: '',
   };
 
-  handleAddContact = e => {
-    e.preventDefault();
+  handleAddContact = contact => {
     console.log('handlerAddContact');
-    const item = { id: nanoid(), name: this.state.name, number: this.state.number };
     this.setState(prev => {
-      return { contacts: prev.contacts.concat(item), name: '', number: '' };
+      return { contacts: prev.contacts.concat(contact), name: '', number: '' };
     });
-  };
-
-  handleChangeName = e => {
-    this.setState({ name: e.target.value });
-  };
-
-  handleChangeNumber = e => {
-    this.setState({ number: e.target.value });
   };
 
   handleChangeFilter = e => {
     this.setState({ filter: e.target.value });
   };
 
+  handleDeleteContact = id => {
+    console.log(id);
+    this.setState(prev => ({ contacts: prev.contacts.filter(item => item.id !== id) }));
+  };
+
   render() {
     return (
-      <div>
+      <WrapperRoot>
         <h1>Phonebook</h1>
         <ContactForm
           addContact={this.handleAddContact}
-          changeName={this.handleChangeName}
-          changeNumber={this.handleChangeNumber}
+          contacts={this.state.contacts}
+          // changeName={this.handleChangeName}
+          // changeNumber={this.handleChangeNumber}
         />
         <Filter changeFilter={this.handleChangeFilter} />
         <ContactList
@@ -55,6 +52,7 @@ export class App extends Component {
               ? this.state.contacts.filter(item => item.name.toLowerCase().includes(this.state.filter.toLowerCase()))
               : this.state.contacts
           }
+          onDelete={this.handleDeleteContact}
         />
         {/* <Section
           title="Phonebook"
@@ -63,7 +61,7 @@ export class App extends Component {
             <ContactList />,
           ]}
         /> */}
-      </div>
+      </WrapperRoot>
     );
   }
 }

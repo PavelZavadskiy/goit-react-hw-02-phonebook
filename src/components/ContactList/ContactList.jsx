@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { Item, Title, Text, List } from './ContactList.styled';
+import { Item, Title, Text, List, Button, Wrapper } from './ContactList.styled';
 
 export class ContactList extends Component {
   render() {
@@ -10,9 +10,12 @@ export class ContactList extends Component {
         <List>
           {contacts.map(item => (
             <Item key={item.id}>
-              <Text>
-                {item.name}: {item.number}
-              </Text>
+              <Wrapper>
+                <Text>
+                  {item.name}: {item.number}
+                </Text>
+                <Button onClick={() => this.props.onDelete(item.id)}>Delete</Button>
+              </Wrapper>
             </Item>
           ))}
         </List>
