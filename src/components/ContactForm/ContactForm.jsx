@@ -1,30 +1,29 @@
 import { Component } from 'react';
 import { nanoid } from 'nanoid';
-import { Wrapper, Text, InputName, Button } from './ContactForm.styled';
+import { Wrapper, Text, Input, Button, ErrorText } from './ContactForm.styled';
+import { Formik, ErrorMessage } from 'formik';
+import * as yup from 'yup';
+
+const initialValues = {
+  name: '',
+  number: '',
+};
+
+let userSchema = yup.object({
+  name: yup
+    .string()
+    .matches(/^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/)
+    .required(),
+  number: yup
+    .string()
+    .matches(/\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/)
+    .required(),
+});
 
 export class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
-
-  handleChangeName = e => {
-    console.log('handleChangeName');
-    // console.log(e.target.validity.valid);
-    this.setState({ name: e.target.value });
-  };
-
-  handleChangeNumber = e => {
-    console.log('handleChangeNumber');
-    // console.log(e.target.validity.valid);
-    this.setState({ number: e.target.value });
-  };
-
   handleClickAddContact = e => {
     e.preventDefault();
-    console.log(e);
     const { contacts } = this.props;
-    console.log(contacts);
     if (contacts.find(contact => contact.name === this.state.name) === undefined) {
       const item = { id: nanoid(), name: this.state.name, number: this.state.number };
       this.props.addContact(item);
@@ -33,36 +32,51 @@ export class ContactForm extends Component {
     }
   };
 
+  handleOnSubmit = (values, actions) => {
+    const { contacts } = this.props;
+    if (contacts.find(contact => contact.name === values.name) === undefined) {
+      const item = { id: nanoid(), name: values.name, number: values.number };
+      this.props.addContact(item);
+      actions.resetForm();
+    } else {
+      alert(`${values.name} is already in contacts.`);
+    }
+  };
+
   render() {
     return (
-      <Wrapper onSubmit={this.handleClickAddContact}>
-        <Text>Name</Text>
-        <InputName
-          type="text"
-          name="name"
-          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-          required
-          onChange={this.handleChangeName}
-        />
-        <Text>Number</Text>
-        <InputName
-          type="tel"
-          name="number"
-          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-          required
-          onChange={this.handleChangeNumber}
-        />
-        <Button
-          type="Submit"
-          // onClick={() => {
-          //   this.handleClickAddContact();
-          // }}
-        >
-          Add contact
-        </Button>
-      </Wrapper>
+      <Formik initialValues={initialValues} onSubmit={this.handleOnSubmit} validationSchema={userSchema}>
+        <Wrapper>
+          <Text>Name</Text>
+          <Input
+            type="text"
+            name="name"
+            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+          />
+          <ErrorMessage name="name">
+            {() => (
+              <ErrorText>
+                Wrong name: Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob
+                Mercer, Charles de Batz de Castelmore d'Artagnan
+              </ErrorText>
+            )}
+          </ErrorMessage>
+          <Text>Number</Text>
+          <Input
+            type="tel"
+            name="number"
+            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+          />
+          <ErrorMessage name="number">
+            {() => (
+              <ErrorText>
+                Phone number must be digits and can contain spaces, dashes, parentheses and can start with +
+              </ErrorText>
+            )}
+          </ErrorMessage>
+          <Button type="Submit">Add contact</Button>
+        </Wrapper>
+      </Formik>
     );
   }
 }

@@ -1,8 +1,6 @@
 import { Component } from 'react';
 import { WrapperRoot } from './App.styled';
-// import { Section } from './Section/Section';
 import { ContactForm } from './ContactForm/ContactForm';
-
 import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
 
@@ -14,13 +12,10 @@ export class App extends Component {
       { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
-    // name: '',
-    // number: '',
     filter: '',
   };
 
   handleAddContact = contact => {
-    console.log('handlerAddContact');
     this.setState(prev => {
       return { contacts: prev.contacts.concat(contact), name: '', number: '' };
     });
@@ -31,7 +26,6 @@ export class App extends Component {
   };
 
   handleDeleteContact = id => {
-    console.log(id);
     this.setState(prev => ({ contacts: prev.contacts.filter(item => item.id !== id) }));
   };
 
@@ -39,12 +33,8 @@ export class App extends Component {
     return (
       <WrapperRoot>
         <h1>Phonebook</h1>
-        <ContactForm
-          addContact={this.handleAddContact}
-          contacts={this.state.contacts}
-          // changeName={this.handleChangeName}
-          // changeNumber={this.handleChangeNumber}
-        />
+        <ContactForm addContact={this.handleAddContact} contacts={this.state.contacts} />
+        <h2>Contacts</h2>
         <Filter changeFilter={this.handleChangeFilter} />
         <ContactList
           contacts={
@@ -54,13 +44,6 @@ export class App extends Component {
           }
           onDelete={this.handleDeleteContact}
         />
-        {/* <Section
-          title="Phonebook"
-          children={[
-            <ContactForm addContact={this.handleAddContact} changeName={this.handleChangeName} />,
-            <ContactList />,
-          ]}
-        /> */}
       </WrapperRoot>
     );
   }
